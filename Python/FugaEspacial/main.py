@@ -40,7 +40,6 @@ class Game:
     DIREITA = pygame.K_RIGHT
     ESQUERDA = pygame.K_LEFT
     mudar_x = 0.0
-
     
     # Operações
     def __init__(self, size, fullscreen):
@@ -57,9 +56,23 @@ class Game:
     def handle_events(self):
         # Trata a saída do jogo
         for event in pygame.event.get():
+            
             if event.type == pygame.QUIT:
                 self.run = False
         
+            #QUANDO O TECLADO É ACIONADO, SELECIONA A POSIÇÃO DA NAVE"
+            if event.type == pygame.KEYDOWN:
+                
+                if event.key == self.ESQUERDA:
+                    self.mudar_x = -3
+                    
+                if event.key == self.DIREITA:
+                    self.mudar_x = 3
+            
+            if event.type == pygame.KEYUP:
+                if event.key == self.ESQUERDA or event.key == self.DIREITA:
+                    self.mudar_x = 0
+            
     def elements_update(self, dt):
         self.background.update(dt)   # Atualiza elementos
 
@@ -67,6 +80,17 @@ class Game:
         self.background.draw(self.screen)    # Desenhar elementos
     
     def loop(self):
+        
+        velocidade_background = 10
+        
+        #margem esquerda
+        movL_x = 0
+        movL_y = 0
+        
+        #margem direita
+        movR_x = 740
+        movR_y = 0
+        
         self.background = Background()  # Criar objeto background
         
         #Posição do Jogador
@@ -88,26 +112,35 @@ class Game:
             
             #adiciona movimento ao background
             self.background.move(self.screen,self.height,movL_x,movL_y,movR_x,movR_y)
-            movL_y = movL_y+velocidade_background
-            movR_y = movR_y+velocidade_background
+            movL_y = movL_y + velocidade_background
+            movR_y = movR_y + velocidade_background
             
+            #caso a imagem ultrapasse a tela, ela volta ao topo, gera o loop infinito
             if movL_y > 600 and movR_y > 600:
                 movL_y -=600
                 movR_y -=600
-                
+
+            #MOVIMENTAÇÃO DO PLAYER
+            x = x + self.mudar_x
+            
             #desenhar player
             self.player.draw(self.screen,x,y)
             
+            
             pygame.display.update()
 
+
 class Background:
-    image = None
+    image = None        
+    margin_left = None
+    margin_right = None
     
     def __init__(self):
 
         #definição da imagem
         background_fig = pygame.image.load("Images/background.png")
         background_fig = background_fig.convert()
+        background_fig = pygame.transform.scale(background_fig,(800,602))
         self.image = background_fig
         
         #transformação das margens para resolução útil
@@ -120,7 +153,7 @@ class Background:
         margin_right_fig.convert()
         margin_right_fig = pygame.transform.scale(margin_right_fig,(60,602))
         self.margin_right = margin_right_fig
-        
+    
     def update(self, dt):
         pass
     
@@ -130,7 +163,13 @@ class Background:
         #margens plano de fundo, move a imagem para o centro mostrando as bordas
         screen.blit(self.margin_left, (0, 0))
         screen.blit(self.margin_right, (740, 0))
-        
+    
+    def move(self, screen, scr_height, movL_x, movL_y, movR_x, movR_y):
+        for i in range(0,2):
+            screen.blit(self.image,(movL_x,movL_y-i*scr_height))
+            screen.blit(self.margin_left,(movL_x,movL_y-i*scr_height))
+            screen.blit(self.margin_right,(movL_x,movL_y-i*scr_height))
+
     margin_left = None
     margin_right = None
 

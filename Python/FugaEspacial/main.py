@@ -30,6 +30,9 @@ class Player:
     def draw(self, screen, x, y):
         screen.blit(self.image, (x,y))
 
+    def move(self, mudar_x):
+        self.x += mudar_x
+
 class Background:
     image = None        
     margin_left = None
@@ -53,23 +56,26 @@ class Background:
         margin_right_fig.convert()
         margin_right_fig = pygame.transform.scale(margin_right_fig,(60,602))
         self.margin_right = margin_right_fig
-    
-    def update(self, dt):
-        pass
-    
-    #renderiza a imagem
+
     def draw(self, screen):
+        #renderiza a imagem
         screen.blit(self.image, (0, 0))
         #margens plano de fundo, move a imagem para o centro mostrando as bordas
         screen.blit(self.margin_left, (0, 0))
         screen.blit(self.margin_right, (740, 0))
     
+    def draw_freedom(self, screen):
+        screen.blit(self.image, (0,0))
+    
     def move(self, screen, scr_height, movL_x, movL_y, movR_x, movR_y):
         for i in range(0,2):
             screen.blit(self.image,(movL_x,movL_y-i*scr_height))
             screen.blit(self.margin_left,(movL_x,movL_y-i*scr_height))
-            screen.blit(self.margin_right,(movL_x,movL_y-i*scr_height))
+            screen.blit(self.margin_right,(movR_x,movR_y-i*scr_height))
 
+    def update(self,dt):
+        pass
+    
     margin_left = None
     margin_right = None
 
@@ -88,6 +94,12 @@ class Hazard:
     
     def draw (self, screen, x, y):
         screen.blit(self.image,(x,y))
+        
+    def move (self, screen, velocidade_hazard):
+        #movimento ao hazard
+        self.y = self.y + velocidade_hazard / 4
+        self.draw(screen, self.x, self.y)
+        self.y +=velocidade_hazard
 
 class Soundtrack:
     soundtrack = None
@@ -147,34 +159,15 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.screen_size = self.screen.get_size()   # Definir tamanho da tela do jogo
         
-        pygame.mouse.set_visible(0)     # Desabilitar o mouse
+        pygame.mouse.set_visible(False)     # Desabilitar o mouse
         pygame.display.set_caption('Fuga Espacial')     # Definir caption da janela do jogo
 
-        my_font = pygame.font.Font("Fonts/Fonte4.ttf",100)
+        """my_font = pygame.font.Font("Fonts/Fonte4.ttf",100)
         
         self.render_text_bateuLateral = my_font.render("VOCÊ BATEU",0,(255,255,255))
         self.render_text_perdeu = my_font.render("GAME OVER",0,(255,0,0))
+        """
         
-    def handle_events(self):
-        # Trata a saída do jogo
-        for event in pygame.event.get():
-            
-            if event.type == pygame.QUIT:
-                self.run = False
-        
-            #QUANDO O TECLADO É ACIONADO, SELECIONA A POSIÇÃO DA NAVE"
-            if event.type == pygame.KEYDOWN:
-                
-                if event.key == self.ESQUERDA:
-                    self.mudar_x = -3
-                    
-                if event.key == self.DIREITA:
-                    self.mudar_x = 3
-            
-            if event.type == pygame.KEYUP:
-                if event.key == self.ESQUERDA or event.key == self.DIREITA:
-                    self.mudar_x = 0
-            
     def elements_update(self, dt):
         self.background.update(dt)   # Atualiza elementos
 
@@ -200,6 +193,37 @@ class Game:
         else:
             print("Sound file not found... ignoring", file=sys.stderr)
      
+    def draw_explosion(self, screen, x, y):
+        explosion_fig = pygame.image.load("Images/explosion.png")
+        explosion_fig.convert()
+        explosion_fig = pygame.transform.scale(explosion_fig,(150,150))
+        screen.blit(explosion_fig,(x,y))
+    
+    def handle_events(self):
+        # Trata a saída do jogo
+        for event in pygame.event.get():
+            
+            if event.type == pygame.QUIT:
+                self.run = False
+        
+            #QUANDO O TECLADO É ACIONADO, SELECIONA A POSIÇÃO DA NAVE"
+            if event.type == pygame.KEYDOWN:
+                
+                if event.key == self.ESQUERDA:
+                    self.mudar_x = -3
+                    
+                if event.key == self.DIREITA:
+                    self.mudar_x = 3
+            
+            if event.type == pygame.KEYUP:
+                if event.key == self.ESQUERDA or event.key == self.DIREITA:
+                    self.mudar_x = 0
+        
+    def write_message(self, message, R,G,B,x,y):
+        my_font1 = pygame.font.Font("Fonts/Fonte4.ttf",100)
+        render_text = my_font1.render(message,False,(R,G,B))
+        self.screen.blit(render_text,(x,y))
+    
     def loop(self):
     #laço principal do jogo
         score = 0
@@ -207,6 +231,11 @@ class Game:
         
         velocidade_background = 10
         velocidade_hazard = 10
+        
+        #localização dos obstaculos 
+        hzrd = 0
+        h_x = random.randrange(125,660)
+        h_y = -500
         
         #margem esquerda
         movL_x = 0
@@ -216,15 +245,6 @@ class Game:
         movR_x = 740
         movR_y = 0
        
-       #localização dos obstaculos 
-        hzrd = 0
-        h_x = 0
-        h_y = -500
-        
-        #dimensoes dos obstaculos
-        h_width = 100
-        h_height = 100
-        
         self.background = Background()  # Criar objeto background
         
         self.play_soundtrack()
@@ -252,9 +272,10 @@ class Game:
         
         # Loop principal do programa
         while self.run:
+            
             clock.tick(1000/dt)
             self.handle_events()
-            self.elements_update(dt)
+            
             self.elements_draw()
             
             #adiciona movimento ao background
@@ -268,34 +289,75 @@ class Game:
                 movR_y -=600
 
             #MOVIMENTAÇÃO DO PLAYER
-            x = x + self.mudar_x
+            self.player.move(self.mudar_x)
             
             #desenhar player
-            self.player.draw(self.screen,x,y)
+            self.player.draw(self.screen,self.player.x,self.player.y)
+            
+            #mostrar score
             self.score_card(self.screen,h_passou,score)
             
-            if x >760-92 or x<40+5:
+            if self.player.x > 760-92 or self.player.x < 40+5:
+                
                 self.soundtrack.play_sound('Sounds/jump2.wav')
                 
                 self.screen.blit(self.render_text_bateuLateral,(80,200))            
                 pygame.display.update()
                 time.sleep(3)
                 self.loop()
-                #self.run = False
+                self.run = False
                 
-            
             #adicionando movimento ao hazard
-            h_y = h_y + velocidade_hazard/4
-            self.hazard[hzrd].draw(self.screen,h_x,h_y)
-            h_y = h_y + velocidade_hazard
+            self.hazard[hzrd].move(self.screen, velocidade_hazard)
             
-            if h_y > self.height:
-                h_y = 0-h_height
-                h_x = random.randrange(125,650-h_height)
+            #define onde o obstaculo vai aparecer
+            if self.hazard[hzrd].y > self.height:
+                self.hazard[hzrd].y = 0-self.hazard[hzrd].image.get_height()
+                self.hazard[hzrd].x = random.randrange(125,650-self.hazard[hzrd].image.get_height())
                 hzrd = random.randint(0,4)
                 h_passou = h_passou+1
                 score = h_passou*10
             
+            if score == 60:
+                velocidade_hazard +=0.1
+            
+            #colisao e game over
+            player_rect = self.player.image.get_rect()
+            player_rect.topleft = (self.player.x, self.player.y)
+            hazard_rect = self.hazard[hzrd].image.get_rect()
+            hazard_rect.topleft = (self.hazard[hzrd].x,self.hazard[hzrd].y)
+            
+            if hazard_rect.colliderect(player_rect):
+                
+                self.soundtrack.play_sound('Sounds/crash.wav')
+                
+                #exibe imagem da explosao
+                self.draw_explosion(self.screen, self.player.x - (self.player.image.get_width() / 2) , self.player.y - (self.player.image.get_height()/2))
+                
+                #exibe mensagem de game over
+                self.write_message("GAME OVER!", 255, 0,0, 80,200)
+                
+                pygame.display.update()
+                time.sleep(3)
+                self.run = False
+            
+            #vitoria do jogador
+            if score==100:
+                
+                #musica da vitoria
+                self.soundtrack.play_sound('Sounds/racetheme.mp3')
+                
+                #desenho area diplomatica
+                self.background.draw_freedom(self.screen)
+                
+                #escreve msg de vitoria
+                self.write_message("100 pontos", 255, 117, 24, 90, 100)
+                self.write_message("VOCÊ VENCEU!", 255, 117, 24, 2, 300)
+                
+                pygame.display.update()
+                time.sleep(4)
+                self.run = False
+                            
             pygame.display.update()
 
     def score_card(self, screen, h_passou, score):

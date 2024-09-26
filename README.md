@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <body>
-    <h1><b>CLASSES DO JOGO:</b></h1>
+    <h1><b>Este jogo foi desenvolvido no curso de Programação de Jogos em Python - 2ª Turma/2024, ofertado pela AGENCIA ESPACIAL BRASILEIRA (AEB) ESCOLA </b></h1>
+    <p><b> AEB ESCOLA VIRTUAL </b> https://aebescolavirtual.aeb.gov.br</p>
+    <p>-----</p>
+    <h1>DIAGRAMA DO JOGO</h1>
+    <img src="Captura de tela 2024-09-25 204941.png")>
+    <h1>JOGO EM EXECUÇÃO</h1>
+    <img src="Captura de tela 2024-09-25 205103.png")>
+    <h1><b>CLASSES DO JOGO</b></h1>
     <p><b>GAME</b> - responsável pela lógica e início do jogo</p>
     <p><b>BACKGROUND</b> - responsável pela seleção do plano de fundo</p>
     <p><b>PLAYER</b> - responsável pela construção, posicionamento e imagem do jogador</p>

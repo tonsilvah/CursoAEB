@@ -3,7 +3,6 @@ Descrição: Um grupo de diplomatas escapam de uma fortaleza estelar a bordo de 
     A Nave precisa se desviar das ameaças e sobreviver até atingir a zona de segurança diplomática
 
 """
-
 import pygame
 import time
 import random
@@ -19,7 +18,7 @@ class Player:
     #inicializa os atributos do Jogador(player)
     def __init__(self, x, y):
         
-        player_fig = pygame.image.load("Images/player.png")
+        player_fig = pygame.image.load("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/player.png")
         player_fig.convert()
         player_fig = pygame.transform.scale(player_fig,(90,90))
         self.image = player_fig
@@ -41,18 +40,18 @@ class Background:
     def __init__(self):
 
         #definição da imagem
-        background_fig = pygame.image.load("Images/background.png")
+        background_fig = pygame.image.load("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/background.png")
         background_fig = background_fig.convert()
         background_fig = pygame.transform.scale(background_fig,(800,602))
         self.image = background_fig
         
         #transformação das margens para resolução útil
-        margin_left_fig = pygame.image.load("Images/margin_1.png")
+        margin_left_fig = pygame.image.load("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/margin_1.png")
         margin_left_fig.convert()
         margin_left_fig = pygame.transform.scale(margin_left_fig,(60,602))
         self.margin_left = margin_left_fig
         
-        margin_right_fig = pygame.image.load("Images/margin_2.png")
+        margin_right_fig = pygame.image.load("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/margin_2.png")
         margin_right_fig.convert()
         margin_right_fig = pygame.transform.scale(margin_right_fig,(60,602))
         self.margin_right = margin_right_fig
@@ -177,12 +176,12 @@ class Game:
     def play_soundtrack(self):
     #definicao do som de fundo
     
-        if os.path.isfile('Sounds/song.wav'):
-            pygame.mixer.music.load('Sounds/song.wav')
+        if os.path.isfile('C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/song.wav'):
+            pygame.mixer.music.load('C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/song.wav')
             pygame.mixer.music.set_volume(0.5)
             pygame.mixer.music.play(loops=1)
         else:
-            print("Sounds/song.mp3 not found... ignoring", file=sys.stderr)
+            print("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/song.mp3 not found... ignoring", file=sys.stderr)
     
     def play_sound(self, sound):
         if os.path.isfile(sound):
@@ -194,7 +193,7 @@ class Game:
             print("Sound file not found... ignoring", file=sys.stderr)
      
     def draw_explosion(self, screen, x, y):
-        explosion_fig = pygame.image.load("Images/explosion.png")
+        explosion_fig = pygame.image.load("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/explosion.png")
         explosion_fig.convert()
         explosion_fig = pygame.transform.scale(explosion_fig,(150,150))
         screen.blit(explosion_fig,(x,y))
@@ -220,7 +219,7 @@ class Game:
                     self.mudar_x = 0
         
     def write_message(self, message, R,G,B,x,y):
-        my_font1 = pygame.font.Font("Fonts/Fonte4.ttf",100)
+        my_font1 = pygame.font.Font("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Fonts/Fonte4.ttf",100)
         render_text = my_font1.render(message,False,(R,G,B))
         self.screen.blit(render_text,(x,y))
     
@@ -250,14 +249,14 @@ class Game:
         self.play_soundtrack()
         
         #criar os hazards - obstaculos
-        self.hazard.append(Hazard("Images/satelite.png",h_x,h_y))
-        self.hazard.append(Hazard("Images/nave.png",h_x,h_y))
-        self.hazard.append(Hazard("Images/cometaVermelho.png",h_x,h_y))
-        self.hazard.append(Hazard("Images/meteoros.png",h_x,h_y))
-        self.hazard.append(Hazard("Images/buracoNegro.png",h_x,h_y))
+        self.hazard.append(Hazard("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/satelite.png",h_x,h_y))
+        self.hazard.append(Hazard("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/nave.png",h_x,h_y))
+        self.hazard.append(Hazard("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/cometaVermelho.png",h_x,h_y))
+        self.hazard.append(Hazard("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/meteoros.png",h_x,h_y))
+        self.hazard.append(Hazard("C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Images/buracoNegro.png",h_x,h_y))
         
         #criar trilha sonora
-        self.soundtrack = Soundtrack('Sounds/song.wav')
+        self.soundtrack = Soundtrack('C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/song.wav')
         self.soundtrack.play()
         
         #Posição do Jogador
@@ -299,7 +298,7 @@ class Game:
             
             if self.player.x > 760-92 or self.player.x < 40+5:
                 
-                self.soundtrack.play_sound('Sounds/jump2.wav')
+                self.soundtrack.play_sound('C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/jump2.wav')
                 
                 self.screen.blit(self.render_text_bateuLateral,(80,200))            
                 pygame.display.update()
@@ -329,7 +328,7 @@ class Game:
             
             if hazard_rect.colliderect(player_rect):
                 
-                self.soundtrack.play_sound('Sounds/crash.wav')
+                self.soundtrack.play_sound('C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/crash.wav')
                 
                 #exibe imagem da explosao
                 self.draw_explosion(self.screen, self.player.x - (self.player.image.get_width() / 2) , self.player.y - (self.player.image.get_height()/2))
@@ -345,7 +344,7 @@ class Game:
             if score==100:
                 
                 #musica da vitoria
-                self.soundtrack.play_sound('Sounds/racetheme.mp3')
+                self.soundtrack.play_sound('C:/Users/i5/Documents/GitHub/CURSO AEB/CursoAEB/Python/FugaEspacial/Sounds/racetheme.mp3')
                 
                 #desenho area diplomatica
                 self.background.draw_freedom(self.screen)

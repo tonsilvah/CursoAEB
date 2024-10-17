@@ -6,8 +6,6 @@
     <p>-----</p>
     <h1>DIAGRAMA DO JOGO</h1>
     <img src="Captura de tela 2024-09-25 204941.png")>
-    <h1>JOGO EM EXECUÇÃO</h1>
-    <img src="Captura de tela 2024-09-25 205103.png")>
     <h1><b>CLASSES DO JOGO</b></h1>
     <p><b>GAME</b> - responsável pela lógica e início do jogo</p>
     <p><b>BACKGROUND</b> - responsável pela seleção do plano de fundo</p>
